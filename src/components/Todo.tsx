@@ -22,7 +22,7 @@ export const TodoComponent: React.FC<Props> = ({
   const [formTodo, setFormTodo] = useState(false);
   const [inputText, setInputText] = useState(title);
 
-  const refInputUpdate = useRef<HTMLInputElement>(null)
+  const refInputUpdate = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
@@ -37,14 +37,14 @@ export const TodoComponent: React.FC<Props> = ({
       if (e.key === 'Escape') {
         setFormTodo(false);
       }
-    }
+    };
 
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [formTodo])
+    };
+  }, [formTodo]);
 
   return (
     <div key={id} data-cy="Todo" className={cn('todo', { completed })}>
@@ -61,22 +61,27 @@ export const TodoComponent: React.FC<Props> = ({
       </label>
 
       {formTodo ? (
-        <form onSubmit={() => {
-          if (inputText.length <= 0) {
-            deletePost(id)
-          } else {
-            updatedPost({ ...todo, title: inputText });
-          }
-          setFormTodo(false);
-        }}>
+        <form
+          onSubmit={() => {
+            if (inputText.length <= 0) {
+              deletePost(id);
+            } else {
+              updatedPost({ ...todo, title: inputText });
+            }
+
+            setFormTodo(false);
+          }}
+        >
           <input
-            className='todo__title-field'
+            className="todo__title-field"
             type="text"
             value={inputText}
             onChange={handleInputChange}
             ref={refInputUpdate}
-            onBlur={() => {setFormTodo(false)}}
-            placeholder='Empty todo will be deleted'
+            onBlur={() => {
+              setFormTodo(false);
+            }}
+            placeholder="Empty todo will be deleted"
           />
         </form>
       ) : (
@@ -84,7 +89,7 @@ export const TodoComponent: React.FC<Props> = ({
           <span
             data-cy="TodoTitle"
             className="todo__title"
-            onDoubleClick={(e) => {
+            onDoubleClick={e => {
               e.preventDefault();
               setFormTodo(true);
             }}
@@ -111,7 +116,6 @@ export const TodoComponent: React.FC<Props> = ({
             <div className="loader" />
           </div>
         </>
-
       )}
     </div>
   );

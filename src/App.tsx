@@ -149,7 +149,7 @@ export const App: React.FC = () => {
     updatedTodo(todo)
       .then(() => {
         setTodos(prevTodos =>
-          prevTodos.map(t => (t.id === todo.id ? todo : t))
+          prevTodos.map(t => (t.id === todo.id ? todo : t)),
         );
       })
       .catch(() => {
