@@ -47,20 +47,55 @@ export const App: React.FC = () => {
     }
   }, [todos, loadingTodos]);
 
-  const toggleTodo = (id: number) => {
-    setTodos(prevTodos =>
-      prevTodos.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+  const toggleTodo = (t: Todo) => {
+    setLoadingTodos(prev => [...prev, t.id]);
+
+    updatedTodo({ ...t, completed: !t.completed })
+      .then(updatedTodoFromServer => {
+        setTodos(prevTodos =>
+          prevTodos.map(todo =>
+            todo.id === updatedTodoFromServer.id ? updatedTodoFromServer : todo,
+          ),
+        );
+      })
+      .catch(() => {
+        setLoadingError('Unable to update a todo');
+        setTimeout(() => {
+          setLoadingError('');
+        }, 3000);
+      })
+      .finally(() => {
+        setLoadingTodos(prev => prev.filter(id => id !== t.id));
+      });
   };
 
-  const toggleTodoAll = () => {
-    const allCompleted = todos.every(todo => todo.completed);
+  const toggleTodoAll = (todosList: Todo[]) => {
+    const allCompleted = todosList.every(todo => todo.completed);
+    const updatedTodos = todosList.map(todo => ({
+      ...todo,
+      completed: !allCompleted,
+    }));
 
-    setTodos(prevTodos =>
-      prevTodos.map(todo => ({ ...todo, completed: !allCompleted })),
+    const todosToUpdate = updatedTodos.filter(
+      todo => todo.completed !== allCompleted,
     );
+
+    setLoadingTodos(todosToUpdate.map(todo => todo.id));
+
+    Promise.all(todosToUpdate.map(todo => updatedTodo(todo)))
+      .then(() => {
+        setTodos(updatedTodos);
+      })
+      .catch(() => {
+        setLoadingError('Unable to update todos');
+        setTodos(todosList); // Используйте оригинальный список todos
+        setTimeout(() => {
+          setLoadingError('');
+        }, 3000);
+      })
+      .finally(() => {
+        setLoadingTodos([]);
+      });
   };
 
   const handleAddTodo = (e: React.FormEvent) => {
@@ -196,12 +231,16 @@ export const App: React.FC = () => {
       <h1 className="todoapp__title">todos</h1>
       <div className="todoapp__content">
         <header className="todoapp__header">
-          <button
-            type="button"
-            className={cn('todoapp__toggle-all', { active: cnButton })}
-            data-cy="ToggleAllButton"
-            onClick={toggleTodoAll}
-          />
+          {todos.length > 0 && !loadingTodos.length && (
+            <button
+              type="button"
+              className={cn('todoapp__toggle-all', { active: cnButton })}
+              data-cy="ToggleAllButton"
+              onClick={() => {
+                toggleTodoAll(todos);
+              }}
+            />
+          )}
           <form onSubmit={handleAddTodo}>
             <input
               data-cy="NewTodoField"

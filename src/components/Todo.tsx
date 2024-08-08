@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   todo: Todo;
-  toggleTodo: (id: number) => void;
+  toggleTodo: (todo: Todo) => void;
   deletePost: (id: number) => void;
   isLoading: boolean;
   updatedPost: (todo: Todo) => void;
@@ -55,7 +55,7 @@ export const TodoComponent: React.FC<Props> = ({
           className="todo__status"
           id={`todo-status-${id}`}
           checked={completed}
-          onChange={() => toggleTodo(id)}
+          onChange={() => toggleTodo(todo)}
         />
         <span className="visually-hidden">Mark as completed</span>
       </label>

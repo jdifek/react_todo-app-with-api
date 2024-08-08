@@ -4,7 +4,7 @@ import { TodoComponent } from './Todo';
 
 type Props = {
   todos: Todo[];
-  toggleTodo: (id: number) => void;
+  toggleTodo: (todo: Todo) => void;
   deletePost: (id: number) => void;
   loadingTodos: number[];
   updatedPost: (todo: Todo) => void;
