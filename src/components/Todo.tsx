@@ -51,7 +51,7 @@ export const TodoComponent: React.FC<Props> = ({
     if (inputText.length <= 0) {
       deletePost(id);
     } else {
-      if (inputText !== todo.title) {
+      if (inputText.trim() !== todo.title) {
         updatedPost({ ...todo, title: inputText.trim() });
       }
     }
@@ -88,6 +88,7 @@ export const TodoComponent: React.FC<Props> = ({
             ref={refInputUpdate}
             onBlur={() => {
               setFormTodo(false);
+              handleSubmit();
             }}
             placeholder="Empty todo will be deleted"
           />
