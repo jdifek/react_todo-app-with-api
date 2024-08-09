@@ -47,6 +47,18 @@ export const TodoComponent: React.FC<Props> = ({
     };
   }, [formTodo, todo.title]);
 
+  const handleSubmit = () => {
+    if (inputText.length <= 0) {
+      deletePost(id);
+    } else {
+      if (inputText !== todo.title) {
+        updatedPost({ ...todo, title: inputText.trim() });
+      }
+    }
+
+    setFormTodo(false);
+  };
+
   return (
     <div key={id} data-cy="Todo" className={cn('todo', { completed })}>
       <label className="todo__status-label" htmlFor={`todo-status-${id}`}>
@@ -64,13 +76,7 @@ export const TodoComponent: React.FC<Props> = ({
       {formTodo ? (
         <form
           onSubmit={() => {
-            if (inputText.length <= 0) {
-              deletePost(id);
-            } else {
-              updatedPost({ ...todo, title: inputText });
-            }
-
-            setFormTodo(false);
+            handleSubmit();
           }}
         >
           <input

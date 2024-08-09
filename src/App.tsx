@@ -51,7 +51,7 @@ export const App: React.FC = () => {
     setLoadingTodos(prev => [...prev, t.id]);
 
     updatedTodo({ ...t, completed: !t.completed })
-      .then(updatedTodoFromServer => {
+      .then((updatedTodoFromServer: Todo) => {
         setTodos(prevTodos =>
           prevTodos.map(todo =>
             todo.id === updatedTodoFromServer.id ? updatedTodoFromServer : todo,
