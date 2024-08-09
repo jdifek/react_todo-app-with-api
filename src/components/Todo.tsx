@@ -51,6 +51,7 @@ export const TodoComponent: React.FC<Props> = ({
 
   const handleSubmit = () => {
     const trimmedTitle = inputText.trim();
+
     setInputText(trimmedTitle);
 
     if (trimmedTitle.length <= 0) {
@@ -66,16 +67,16 @@ export const TodoComponent: React.FC<Props> = ({
 
   const handleOnBlur = () => {
     const trimmedTitle = inputText.trim();
+
     setInputText(trimmedTitle);
     setFormTodo(false);
     handleSubmit();
-
-  }
+  };
 
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSubmit();
-  }
+  };
 
   return (
     <div key={id} data-cy="Todo" className={cn('todo', { completed })}>
@@ -92,9 +93,7 @@ export const TodoComponent: React.FC<Props> = ({
       </label>
 
       {formTodo ? (
-        <form
-          onSubmit={handleSubmitForm}
-        >
+        <form onSubmit={handleSubmitForm}>
           <input
             data-cy="TodoTitleField"
             className="todo__title-field"
