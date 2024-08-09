@@ -25,7 +25,9 @@ export const TodoComponent: React.FC<Props> = ({
   const refInputUpdate = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value);
+    const valueI = e.target.value;
+
+    setInputText(valueI);
   };
 
   useEffect(() => {
@@ -48,16 +50,32 @@ export const TodoComponent: React.FC<Props> = ({
   }, [formTodo, todo.title]);
 
   const handleSubmit = () => {
-    if (inputText.length <= 0) {
+    const trimmedTitle = inputText.trim();
+    setInputText(trimmedTitle);
+
+    if (trimmedTitle.length <= 0) {
       deletePost(id);
     } else {
-      if (inputText.trim() !== todo.title) {
-        updatedPost({ ...todo, title: inputText.trim() });
+      if (trimmedTitle !== todo.title) {
+        updatedPost({ ...todo, title: trimmedTitle });
       }
     }
 
     setFormTodo(false);
   };
+
+  const handleOnBlur = () => {
+    const trimmedTitle = inputText.trim();
+    setInputText(trimmedTitle);
+    setFormTodo(false);
+    handleSubmit();
+
+  }
+
+  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSubmit();
+  }
 
   return (
     <div key={id} data-cy="Todo" className={cn('todo', { completed })}>
@@ -75,9 +93,7 @@ export const TodoComponent: React.FC<Props> = ({
 
       {formTodo ? (
         <form
-          onSubmit={() => {
-            handleSubmit();
-          }}
+          onSubmit={handleSubmitForm}
         >
           <input
             data-cy="TodoTitleField"
@@ -86,10 +102,7 @@ export const TodoComponent: React.FC<Props> = ({
             value={inputText}
             onChange={handleInputChange}
             ref={refInputUpdate}
-            onBlur={() => {
-              setFormTodo(false);
-              handleSubmit();
-            }}
+            onBlur={handleOnBlur}
             placeholder="Empty todo will be deleted"
           />
         </form>
