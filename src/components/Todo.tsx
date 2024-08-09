@@ -35,6 +35,7 @@ export const TodoComponent: React.FC<Props> = ({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        setInputText(todo.title);
         setFormTodo(false);
       }
     };
@@ -44,7 +45,7 @@ export const TodoComponent: React.FC<Props> = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [formTodo]);
+  }, [formTodo, todo.title]);
 
   return (
     <div key={id} data-cy="Todo" className={cn('todo', { completed })}>
@@ -73,6 +74,7 @@ export const TodoComponent: React.FC<Props> = ({
           }}
         >
           <input
+            data-cy="TodoTitleField"
             className="todo__title-field"
             type="text"
             value={inputText}

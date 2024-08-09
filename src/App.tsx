@@ -71,13 +71,14 @@ export const App: React.FC = () => {
 
   const toggleTodoAll = (todosList: Todo[]) => {
     const allCompleted = todosList.every(todo => todo.completed);
+
     const updatedTodos = todosList.map(todo => ({
       ...todo,
       completed: !allCompleted,
     }));
 
     const todosToUpdate = updatedTodos.filter(
-      todo => todo.completed !== allCompleted,
+      (todo, index) => todo.completed !== todosList[index].completed,
     );
 
     setLoadingTodos(todosToUpdate.map(todo => todo.id));
@@ -88,7 +89,7 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setLoadingError('Unable to update todos');
-        setTodos(todosList); // Используйте оригинальный список todos
+        setTodos(todosList);
         setTimeout(() => {
           setLoadingError('');
         }, 3000);
