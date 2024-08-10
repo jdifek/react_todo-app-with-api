@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TodoList } from './components/TodoList';
-import { addTodo, deleteTodo, getTodos, updatedTodo } from './api/todos';
+import {
+  USER_ID,
+  addTodo,
+  deleteTodo,
+  getTodos,
+  updatedTodo,
+} from './api/todos';
 import { Todo } from './types/Todo';
 import cn from 'classnames';
 import { Filter } from './types/types';
@@ -118,7 +124,7 @@ export const App: React.FC = () => {
       id: Date.now(),
       title: inputText,
       completed: false,
-      userId: 1129,
+      userId: USER_ID,
     };
 
     setTempTodos(prevTempTodos => [...prevTempTodos, tempTodo]);
@@ -219,13 +225,13 @@ export const App: React.FC = () => {
   };
 
   const leftItem = todos.filter(todo => !todo.completed).length;
-  const disabledButton = todos.every(todo => !todo.completed);
+  const isButtonDisabled = todos.every(todo => !todo.completed);
 
   const filterValues = Object.values(Filter);
 
   const allTodos = [...filterTodos, ...tempTodos];
 
-  const cnButton = todos.every(todo => todo.completed);
+  const areAllTodosCompleted = todos.every(todo => todo.completed);
 
   return (
     <div className="todoapp">
@@ -235,7 +241,9 @@ export const App: React.FC = () => {
           {todos.length > 0 && !loadingTodos.length && (
             <button
               type="button"
-              className={cn('todoapp__toggle-all', { active: cnButton })}
+              className={cn('todoapp__toggle-all', {
+                active: areAllTodosCompleted,
+              })}
               data-cy="ToggleAllButton"
               onClick={() => {
                 toggleTodoAll(todos);
@@ -268,7 +276,7 @@ export const App: React.FC = () => {
             filterValues={filterValues}
             filterSelected={filterSelected}
             setFilterSelected={setFilterSelected}
-            disabledButton={disabledButton}
+            disabledButton={isButtonDisabled}
             clearCompleted={clearCompleted}
           />
         )}
