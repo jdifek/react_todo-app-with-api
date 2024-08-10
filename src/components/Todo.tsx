@@ -7,7 +7,7 @@ type Props = {
   toggleTodo: (todo: Todo) => void;
   deletePost: (id: number) => void;
   isLoading: boolean;
-  updatedPost: (todo: Todo) => void;
+  updatedPost: (todo: Todo) => Promise<void>;
 };
 
 export const TodoComponent: React.FC<Props> = ({
@@ -49,27 +49,29 @@ export const TodoComponent: React.FC<Props> = ({
     };
   }, [formTodo, todo.title]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedTitle = inputText.trim();
 
     setInputText(trimmedTitle);
 
-    if (trimmedTitle.length <= 0) {
-      deletePost(id);
-    } else {
-      if (trimmedTitle !== todo.title) {
-        updatedPost({ ...todo, title: trimmedTitle });
+    try {
+      if (trimmedTitle.length <= 0) {
+        await deletePost(id);
+      } else {
+        if (trimmedTitle !== todo.title) {
+          await updatedPost({ ...todo, title: trimmedTitle });
+        }
       }
-    }
 
-    setFormTodo(false);
+      setFormTodo(false);
+    } catch {
+    }
   };
 
   const handleOnBlur = () => {
     const trimmedTitle = inputText.trim();
 
     setInputText(trimmedTitle);
-    setFormTodo(false);
     handleSubmit();
   };
 
@@ -126,18 +128,17 @@ export const TodoComponent: React.FC<Props> = ({
           >
             ×
           </button>
-
-          <div
-            data-cy="TodoLoader"
-            className={cn('modal overlay', {
-              'is-active': isLoading,
-            })}
-          >
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
         </>
       )}
+      <div
+        data-cy="TodoLoader"
+        className={cn('modal overlay', {
+          'is-active': isLoading,
+        })}
+      >
+        <div className="modal-background has-background-white-ter" />
+        <div className="loader" />
+      </div>
     </div>
   );
 };

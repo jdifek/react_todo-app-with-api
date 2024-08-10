@@ -167,42 +167,37 @@ export const App: React.FC = () => {
       });
   };
 
-  const deletePost = (id: number) => {
+  const deletePost = async (id: number) => {
     setLoadingTodos(prev => [...prev, id]);
 
-    deleteTodo(id)
-      .then(() => {
-        setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
-      })
-      .catch(() => {
-        setLoadingError('Unable to delete a todo');
-        setTimeout(() => {
-          setLoadingError('');
-        }, 3000);
-      })
-      .finally(() => {
-        setLoadingTodos(prev => prev.filter(todoId => todoId !== id));
-      });
+    try {
+      await deleteTodo(id);
+      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+    } catch {
+      setLoadingError('Unable to delete a todo');
+      setTimeout(() => {
+        setLoadingError('');
+      }, 3000);
+    } finally {
+      setLoadingTodos(prev => prev.filter(todoId => todoId !== id));
+    }
   };
 
-  const updatedPost = (todo: Todo) => {
+  const updatedPost = async (todo: Todo) => {
     setLoadingTodos(prev => [...prev, todo.id]);
 
-    updatedTodo(todo)
-      .then(() => {
-        setTodos(prevTodos =>
-          prevTodos.map(t => (t.id === todo.id ? todo : t)),
-        );
-      })
-      .catch(() => {
-        setLoadingError('Unable to update a todo');
-        setTimeout(() => {
-          setLoadingError('');
-        }, 3000);
-      })
-      .finally(() => {
-        setLoadingTodos(prev => prev.filter(todoId => todoId !== todo.id));
-      });
+    try {
+      await updatedTodo(todo);
+      setTodos(prevTodos => prevTodos.map(t => (t.id === todo.id ? todo : t)));
+    } catch {
+      setLoadingError('Unable to update a todo');
+      setTimeout(() => {
+        setLoadingError('');
+      }, 3000);
+      throw new Error();
+    } finally {
+      setLoadingTodos([]);
+    }
   };
 
   const clearErrors = () => {

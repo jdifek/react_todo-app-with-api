@@ -7,7 +7,7 @@ type Props = {
   toggleTodo: (todo: Todo) => void;
   deletePost: (id: number) => void;
   loadingTodos: number[];
-  updatedPost: (todo: Todo) => void;
+  updatedPost: (todo: Todo) => Promise<void>;
 };
 
 export const TodoList: React.FC<Props> = ({
