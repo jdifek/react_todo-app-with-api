@@ -64,8 +64,7 @@ export const TodoComponent: React.FC<Props> = ({
       }
 
       setFormTodo(false);
-    } catch {
-    }
+    } catch {}
   };
 
   const handleOnBlur = () => {
